@@ -11,11 +11,9 @@ class Converter:
         'liter-gram' : lambda x: x * 1000,
         'gram-meter' : lambda x: x / 1000,
         'meter-gram' : lambda x: x * 1000,
-        'liter-meter' : lambda x: 1 / (x ** 3),
-        'meter-liter' : lambda x: (x ** 3) * 1000
     }
 
-    def get_unit(self, measure):
+    def get_unit(self, measure = str):
         keys = self.units.keys()
         for key in keys:
             if measure in self.units[key]:
@@ -35,31 +33,30 @@ class Converter:
         unit_index = self.units[unit_key].index(arg['unit'])
         to_index = self.units[to_key].index(arg['to'])
         scale = self.get_conversion('-'.join([unit_key, to_key]))
-        if unit_key == to_key:
-            print(f"Result : {arg['value']}{arg['to']}")
-            return None
+        print(f"Converting {unit_key} into {to_key}...")
+        print(f"Input : {arg['value']}{arg['unit']}")
         return (unit_index, to_index, scale)
 
     def convert(self, arg = {}):
-        print(f"Converting {arg['value']}{arg['unit']} into {arg['to']}...")
         text = ''
         tools = self.__make(arg)
-        if tools is None:
-            return tools
         if(tools[2] is not None):
             func = tools[2]
             if tools[0] < tools[1] :
-                text = f"Result : {func(arg['value'] / 10 ** (tools[1]  - tools[0] ))}{arg['to']}"
+                text = f"Result : {func(arg['value'] / 10 ** (tools[1]  - tools[0]))}{arg['to']}"
             elif tools[0]  > tools[1] :
-                text = f"Result : {func(arg['value'] * 10 ** (tools[0]  - tools[1] ))}{arg['to']}"
+                text = f"Result : {func(arg['value'] * 10 ** (tools[0]  - tools[1]))}{arg['to']}"
+            else:
+                text = f"Result : {func(arg['value'])}{arg['to']}"
         else:
             if tools[0] < tools[1] :
                 text = f"Result : {arg['value'] / 10 ** (tools[1]  - tools[0] )}{arg['to']}"
             elif tools[0]  > tools[1] :
                 text = f"Result : {arg['value'] * 10 ** (tools[0]  - tools[1] )}{arg['to']}"
+            else:
+                text = f"Result : {arg['value']}{arg['to']}"
         return text
 
 
 converter = Converter()
-print(converter.convert({'value': 2, 'unit': 'l', 'to': 'm'}))
-print(converter.get_unit('ml'))
+print(converter.convert({'value': 1, 'unit': 'kg', 'to': 'l'}))
