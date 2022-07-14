@@ -4,6 +4,7 @@ class ClassicConverter:
     Dict for units, each key contains an array going from 10^-3 to 10^3.
     Currently, there are three units : meter, liter and gram.
     '''
+
     units = {
         'meter': ['mm', 'cm', 'dm', 'm', 'dam', 'hm', 'km'],
         'liter': ['ml', 'cl', 'dl', 'l', 'dal', 'hl', 'kl'],
@@ -14,6 +15,7 @@ class ClassicConverter:
     Dict for conversion between two units.
     Lambda function is better for easy and fast use.
     '''
+
     conversion = {
         'gram-liter': lambda x: x / 1000,
         'liter-gram': lambda x: x * 1000,
@@ -48,13 +50,15 @@ class ClassicConverter:
         return None
 
     '''
-    Get indices from measures and if they are different, conversion is taken.
+    Get indices from unit inputs and if they are different, conversion is taken.
     All is returned as tuple.
     '''
 
     def __make(self, arg={}):
         unit_key = self.get_unit(arg['unit'])
         to_key = self.get_unit(arg['to'])
+        if unit_key is None or to_key is None:
+            raise TypeError('incorrect unit')
         unit_index = self.units[unit_key].index(arg['unit'])
         to_index = self.units[to_key].index(arg['to'])
         scale = self.get_conversion('-'.join([unit_key, to_key]))

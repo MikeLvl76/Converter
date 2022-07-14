@@ -1,19 +1,34 @@
 class TemperatureConverter:
 
+    '''
+    Dict for temperature, each key contains a string representation of temperature unit
+    Currently, there are three units : fahrenheit, celsius, kelvin
+    '''
+
     temp = {
         'fahrenheit': '°F',
         'celsius': '°C',
         'kelvin': 'K'
     }
 
+    '''
+    Dict for conversion between two temperatures.
+    Lambda function is better for easy and fast use.
+    '''
+
     conversion = {
-        'celsius-fahrenheit': lambda x: (x * (9/5)) + 32, #
-        'fahrenheit-celsius': lambda x: (x - 32) * (5/9), #
-        'celsius-kelvin': lambda x: x + 273.15, #
-        'kelvin-celsius': lambda x: x - 273.15, #
-        'fahrenheit-kelvin': lambda x: (x + 459.67) * (5/9), #
+        'celsius-fahrenheit': lambda x: (x * (9/5)) + 32,
+        'fahrenheit-celsius': lambda x: (x - 32) * (5/9),
+        'celsius-kelvin': lambda x: x + 273.15,
+        'kelvin-celsius': lambda x: x - 273.15,
+        'fahrenheit-kelvin': lambda x: (x + 459.67) * (5/9),
         'kelvin-fahrenheit': lambda x: x * 9/5 - 459.67
     }
+
+    '''
+    By one measure we get associated temperature.
+    If not, None is returned.
+    '''
 
     def get_temp(self, measure=str):
         keys = self.temp.keys()
@@ -22,12 +37,22 @@ class TemperatureConverter:
                 return key
         return None
 
+    '''
+    The same goes for it but with conversion.
+    If not, None is returned
+    '''
+
     def get_conversion(self, measures=str):
         keys = self.conversion.keys()
         for key in keys:
             if measures == key:
                 return self.conversion[key]
         return None
+
+    '''
+    Get keys from unit inputs and make conversion.
+    All is returned as tuple.
+    '''
 
     def __make(self, arg={}):
         unit_key = self.get_temp(arg['unit'])
@@ -38,6 +63,11 @@ class TemperatureConverter:
         print(f"Converting {unit_key} into {to_key}...")
         print(f"Input : {arg['value']}{arg['unit']}")
         return (arg['value'], arg['to'], conversion)
+
+    '''
+    Make the conversion happen.
+    An empty text is returned if nothing happen.
+    '''
 
     def convert(self, arg={}):
         text = ''
