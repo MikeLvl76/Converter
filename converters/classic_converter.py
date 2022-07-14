@@ -93,6 +93,9 @@ class ClassicConverter:
                 text = f"Result : {arg['value']}{arg['to']}"
         return text
 
+def main():
+    converter = ClassicConverter()
+    print(converter.convert({'value': 1, 'unit': 'l', 'to': 'm'}))
 
-converter = ClassicConverter()
-print(converter.convert({'value': 1, 'unit': 'l', 'to': 'm'}))
+if __name__ == '__main__':
+    main()

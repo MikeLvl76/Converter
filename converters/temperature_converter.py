@@ -78,5 +78,9 @@ class TemperatureConverter:
         text = f"Result : {conversion(tools[0])} {tools[1]}"
         return text
         
-converter = TemperatureConverter()
-print(converter.convert({'value': 27, 'unit': 'K', 'to': '°F'}))
+def main():
+    converter = TemperatureConverter()
+    print(converter.convert({'value': 27, 'unit': 'K', 'to': '°F'}))
+
+if __name__ == '__main__':
+    main()
