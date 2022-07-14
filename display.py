@@ -56,9 +56,10 @@ class Tools:
         label.pack()
         return label
 
-    def place_items(self, items, x_serie, y_serie, w_serie, h_serie):
-        for item, x, y, w, h in zip(items, x_serie, y_serie, w_serie, h_serie):
-            item.place(x=x, y=y, width=w, height=h)
+    def place(self, arg={}):
+        for key in arg.keys():
+            value = arg[key]
+            value[0].place(x=value[1], y=value[2], width=value[3], height=value[4])
 
     def bind(self, item, type, callback):
         item.bind(type, callback)
@@ -113,12 +114,14 @@ def main():
     tools.bind(comboboxClassicInput, "<<ComboboxSelected>>", lambda event: print(f"\"{comboboxClassicInput.get()}\" selected !"))
     tools.bind(comboboxClassicOutput, "<<ComboboxSelected>>", lambda event: print(f"\"{comboboxClassicOutput.get()}\" selected !"))
 
-    items = [entryInput, comboboxClassicInput, comboboxClassicOutput, buttonSave, buttonConvert]
-    x = [10, 110, 180, 10, 60]
-    y = [10, 10, 10, 50, 50]
-    w = [90, 60, 60, 40, 90]
-    h = [30, 30, 30, 30, 30]
-    tools.place_items(items, x, y, w, h)
+    items = {
+        '0': (entryInput, 10, 10, 90, 30),
+        '1': (comboboxClassicInput, 110, 10, 60, 30),
+        '2': (comboboxClassicOutput, 180, 10, 60, 30),
+        '3': (buttonSave, 10, 50, 40, 30),
+        '4': (buttonConvert, 60, 50, 90, 30)
+    }
+    tools.place(items)
 
     tools.loop()
 
