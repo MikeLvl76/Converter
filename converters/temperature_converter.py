@@ -61,7 +61,7 @@ class TemperatureConverter:
             raise TypeError('incorrect temperature unit')
         conversion = self.get_conversion('-'.join([unit_key, to_key]))
         print(f"Converting {unit_key} into {to_key}...")
-        print(f"Input : {arg['value']}{arg['unit']}")
+        print(f"{arg['value']}{arg['unit']}")
         return (arg['value'], arg['to'], conversion)
 
     '''
@@ -75,7 +75,7 @@ class TemperatureConverter:
             return text
         tools = self.__make(arg)
         conversion = tools[2]
-        text = f"Result : {conversion(tools[0])} {tools[1]}"
+        text = f"{conversion(tools[0])} {tools[1]}"
         return text
         
 def main():

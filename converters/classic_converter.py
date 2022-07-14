@@ -63,7 +63,7 @@ class ClassicConverter:
         to_index = self.units[to_key].index(arg['to'])
         scale = self.get_conversion('-'.join([unit_key, to_key]))
         print(f"Converting {unit_key} into {to_key}...")
-        print(f"Input : {arg['value']}{arg['unit']}")
+        print(f"{arg['value']}{arg['unit']}")
         return (unit_index, to_index, scale)
 
     '''
@@ -79,18 +79,18 @@ class ClassicConverter:
         if(tools[2] is not None):
             func = tools[2]
             if tools[0] < tools[1]:
-                text = f"Result : {func(arg['value'] / 10 ** (tools[1]  - tools[0]))}{arg['to']}"
+                text = f"{func(arg['value'] / 10 ** (tools[1]  - tools[0]))}{arg['to']}"
             elif tools[0] > tools[1]:
-                text = f"Result : {func(arg['value'] * 10 ** (tools[0]  - tools[1]))}{arg['to']}"
+                text = f"{func(arg['value'] * 10 ** (tools[0]  - tools[1]))}{arg['to']}"
             else:
-                text = f"Result : {func(arg['value'])}{arg['to']}"
+                text = f"{func(arg['value'])}{arg['to']}"
         else:
             if tools[0] < tools[1]:
-                text = f"Result : {arg['value'] / 10 ** (tools[1]  - tools[0] )}{arg['to']}"
+                text = f"{arg['value'] / 10 ** (tools[1]  - tools[0] )}{arg['to']}"
             elif tools[0] > tools[1]:
-                text = f"Result : {arg['value'] * 10 ** (tools[0]  - tools[1] )}{arg['to']}"
+                text = f"{arg['value'] * 10 ** (tools[0]  - tools[1] )}{arg['to']}"
             else:
-                text = f"Result : {arg['value']}{arg['to']}"
+                text = f"{arg['value']}{arg['to']}"
         return text
 
 def main():
