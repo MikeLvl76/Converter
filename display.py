@@ -91,6 +91,7 @@ def main():
     converter = ClassicConverter()
     tools = Tools()
     tools.create_window('Converter')
+    tools.root.resizable(0, 0)
     canvas = tools.create_canvas(tools.root, (), background='black')
 
     valueInput = tools.add_stringvar()
@@ -116,12 +117,12 @@ def main():
     tools.bind(comboboxClassicInput, "<<ComboboxSelected>>", lambda event: print(f"\"{comboboxClassicInput.get()}\" selected !"))
     tools.bind(comboboxClassicOutput, "<<ComboboxSelected>>", lambda event: print(f"\"{comboboxClassicOutput.get()}\" selected !"))
 
-    label1 = tools.add_label(canvas, text='value', background='black', foreground='white', justify='center', font=('Arial', 9, 'underline'))
-    label2 = tools.add_label(canvas, text='unit', background='black', foreground='white', justify='center', font=('Arial', 9, 'underline'))
-    label3 = tools.add_label(canvas, text='unit targeted', background='black', foreground='white', justify='center', font=('Arial', 9, 'underline'))
+    label1 = tools.add_label(canvas, text='value', background='black', foreground='white', justify='left', font=('Arial', 9, 'underline'))
+    label2 = tools.add_label(canvas, text='unit', background='black', foreground='white', justify='left', font=('Arial', 9, 'underline'))
+    label3 = tools.add_label(canvas, text='unit targeted', background='black', foreground='white', justify='left', font=('Arial', 9, 'underline'))
     text = tools.add_stringvar()
     text.set('Awaiting result')
-    result = tools.add_label(canvas, textvariable=text, background='black', foreground='white', justify='center', font=('Arial', 9))
+    result = tools.add_label(canvas, textvariable=text, background='black', foreground='white', justify='center', font=('Arial', 9), relief="solid", highlightcolor="white", highlightthickness=2)
 
     x_offset = 50
     y_offset = 35
@@ -133,8 +134,8 @@ def main():
         '3': (comboboxClassicInput, tools.dimensions[0] - x_offset * 2, 50, 55, 30),
         '4': (label3, 5, 90, 80, 30),
         '5': (comboboxClassicOutput, tools.dimensions[0] - x_offset * 2, 90, 55, 30),
-        '6': (result, tools.dimensions[0] / 2 - x_offset * 2, tools.dimensions[1] - y_offset * 2.5, 200, 30),
-        '7': (buttonConvert, tools.dimensions[0] / 2 - x_offset, tools.dimensions[1] - y_offset, 90, 30)
+        '6': (result, tools.dimensions[0] - x_offset * 4.5, tools.dimensions[1] - y_offset, 200, 30),
+        '7': (buttonConvert, 5, 130, 90, 30)
     }
     tools.place(items)
 
