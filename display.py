@@ -1,4 +1,5 @@
 import re
+from tkinter import ttk
 from tkinter.ttk import Combobox
 from converters.classic_converter import ClassicConverter
 from converters.temperature_converter import TemperatureConverter
@@ -56,6 +57,12 @@ class Tools:
         label.pack()
         return label
 
+    def add_frame(self, master, **options):
+        return ttk.Frame(master, **options)
+
+    def add_notebook(self, master, **options):
+        return ttk.Notebook(master, **options)
+
     def place(self, arg={}):
         for key in arg.keys():
             value = arg[key]
@@ -92,7 +99,16 @@ def main():
     tools = Tools()
     tools.create_window('Converter')
     tools.root.resizable(0, 0)
-    canvas = tools.create_canvas(tools.root, (), background='black')
+    
+    notebook = tools.add_notebook(tools.root)
+    tabClassic = tools.add_frame(notebook)
+    tabTemperature = tools.add_frame(notebook)
+
+    notebook.add(tabClassic, text='Classic')
+    notebook.add(tabTemperature, text='Temperature')
+
+    notebook.pack(expand=1, fill="both")
+    canvas = tools.create_canvas(tabClassic, (), background='black')
 
     valueInput = tools.add_stringvar()
     entryInput = tools.add_entry(canvas, valueInput)
@@ -134,7 +150,7 @@ def main():
         '3': (comboboxClassicInput, tools.dimensions[0] - x_offset * 2, 50, 55, 30),
         '4': (label3, 5, 90, 80, 30),
         '5': (comboboxClassicOutput, tools.dimensions[0] - x_offset * 2, 90, 55, 30),
-        '6': (result, tools.dimensions[0] - x_offset * 4.5, tools.dimensions[1] - y_offset, 200, 30),
+        '6': (result, tools.dimensions[0] - x_offset * 4.5, 130, 200, 30),
         '7': (buttonConvert, 5, 130, 90, 30)
     }
     tools.place(items)
