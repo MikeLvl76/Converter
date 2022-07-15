@@ -19,8 +19,8 @@ class Tools:
             width = dimensions[0]
             height = dimensions[1]
         else:
-            width = self.root.winfo_screenwidth()
-            height = self.root.winfo_screenheight()
+            width = int(self.root.winfo_screenwidth() / 4)
+            height = int(self.root.winfo_screenheight() / 4)
         self.dimensions = (width, height)
         self.root.geometry('x'.join((str(width), str(height))))
     
@@ -51,8 +51,8 @@ class Tools:
         combobox.pack()
         return combobox
 
-    def add_label(self, master, text, **args):
-        label = Label(master, text=text, **args)
+    def add_label(self, master, **args):
+        label = Label(master, **args)
         label.pack()
         return label
 
@@ -91,7 +91,7 @@ def main():
     converter = ClassicConverter()
     tools = Tools()
     tools.create_window('Converter')
-    canvas = tools.create_canvas(tools.root, (), background='gray')
+    canvas = tools.create_canvas(tools.root, (), background='black')
 
     valueInput = tools.add_stringvar()
     entryInput = tools.add_entry(canvas, valueInput)
@@ -106,20 +106,35 @@ def main():
 
     comboboxClassicInput = tools.add_combobox(canvas, unit)
     comboboxClassicOutput = tools.add_combobox(canvas, unit)
-    buttonSave = tools.add_button(canvas, '✔️', lambda: tools.saveInputs(float(valueInput.get()), comboboxClassicInput.get(), comboboxClassicOutput.get()))
-    buttonConvert = tools.add_button(canvas, 'Convert', lambda : tools.saveResult(converter, tools.save))
+    buttonConvert = tools.add_button(canvas, 'Convert',
+        lambda : (tools.saveInputs(float(valueInput.get()), comboboxClassicInput.get(), comboboxClassicOutput.get()), 
+        tools.saveResult(converter, tools.save), text.set(f"Result : {tools.result}")), justify='center',
+        background='#00349A', foreground='white')
     
     tools.bind(entryInput, '<<end_input>>', lambda event: tools.validate(event, '^[+-]?(\d*[.])?\d+$', valueInput.get()))
     tools.bind(entryInput, '<FocusIn>', lambda event: entryInput.delete(0, END))
     tools.bind(comboboxClassicInput, "<<ComboboxSelected>>", lambda event: print(f"\"{comboboxClassicInput.get()}\" selected !"))
     tools.bind(comboboxClassicOutput, "<<ComboboxSelected>>", lambda event: print(f"\"{comboboxClassicOutput.get()}\" selected !"))
 
+    label1 = tools.add_label(canvas, text='value', background='black', foreground='white', justify='center', font=('Arial', 9, 'underline'))
+    label2 = tools.add_label(canvas, text='unit', background='black', foreground='white', justify='center', font=('Arial', 9, 'underline'))
+    label3 = tools.add_label(canvas, text='unit targeted', background='black', foreground='white', justify='center', font=('Arial', 9, 'underline'))
+    text = tools.add_stringvar()
+    text.set('Awaiting result')
+    result = tools.add_label(canvas, textvariable=text, background='black', foreground='white', justify='center', font=('Arial', 9))
+
+    x_offset = 50
+    y_offset = 35
+
     items = {
-        '0': (entryInput, 10, 10, 90, 30),
-        '1': (comboboxClassicInput, 110, 10, 60, 30),
-        '2': (comboboxClassicOutput, 180, 10, 60, 30),
-        '3': (buttonSave, 10, 50, 40, 30),
-        '4': (buttonConvert, 60, 50, 90, 30)
+        '0': (label1, 5, 10, 50, 30),
+        '1': (entryInput, tools.dimensions[0] - x_offset * 2, 10, 90, 30),
+        '2': (label2, 5, 50, 50, 30),
+        '3': (comboboxClassicInput, tools.dimensions[0] - x_offset * 2, 50, 55, 30),
+        '4': (label3, 5, 90, 80, 30),
+        '5': (comboboxClassicOutput, tools.dimensions[0] - x_offset * 2, 90, 55, 30),
+        '6': (result, tools.dimensions[0] / 2 - x_offset * 2, tools.dimensions[1] - y_offset * 2.5, 200, 30),
+        '7': (buttonConvert, tools.dimensions[0] / 2 - x_offset, tools.dimensions[1] - y_offset, 90, 30)
     }
     tools.place(items)
 

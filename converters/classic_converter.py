@@ -79,16 +79,20 @@ class ClassicConverter:
         if(tools[2] is not None):
             func = tools[2]
             if tools[0] < tools[1]:
-                text = f"{func(arg['value'] / 10 ** (tools[1]  - tools[0]))}{arg['to']}"
+                calculation = func(arg['value'] / 10 ** (tools[1]  - tools[0]))
+                text = f"{round(calculation, 4)}{arg['to']}"
             elif tools[0] > tools[1]:
-                text = f"{func(arg['value'] * 10 ** (tools[0]  - tools[1]))}{arg['to']}"
+                calculation = func(arg['value'] * 10 ** (tools[0]  - tools[1]))
+                text = f"{round(calculation, 4)}{arg['to']}"
             else:
                 text = f"{func(arg['value'])}{arg['to']}"
         else:
             if tools[0] < tools[1]:
-                text = f"{arg['value'] / 10 ** (tools[1]  - tools[0] )}{arg['to']}"
+                calculation = arg['value'] / 10 ** (tools[1]  - tools[0] )
+                text = f"{round(calculation, 4)}{arg['to']}"
             elif tools[0] > tools[1]:
-                text = f"{arg['value'] * 10 ** (tools[0]  - tools[1] )}{arg['to']}"
+                calculation = arg['value'] * 10 ** (tools[0]  - tools[1] )
+                text = f"{round(calculation, 4)}{arg['to']}"
             else:
                 text = f"{arg['value']}{arg['to']}"
         return text
