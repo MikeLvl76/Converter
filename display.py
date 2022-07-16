@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkinter.ttk import Combobox
 from converters.classic_converter import ClassicConverter
 from converters.temperature_converter import TemperatureConverter
+from converters.currency_converter import CurrencyConverter
 from tkinter import END, Button, Canvas, Label, Tk, StringVar, Entry, messagebox
 
 class Tools:
@@ -147,6 +148,7 @@ def fill_canvas(tools, canvas, converter, values):
 def main():
     classic = ClassicConverter()
     temperature = TemperatureConverter()
+    currency = CurrencyConverter()
     tools = Tools()
     tools.create_window('Converter')
     tools.root.resizable(0, 0)
@@ -154,15 +156,19 @@ def main():
     notebook = tools.add_notebook(tools.root)
     tabClassic = tools.add_frame(notebook)
     tabTemperature = tools.add_frame(notebook)
+    tabCurrency = tools.add_frame(notebook)
 
     notebook.add(tabClassic, text='Classic')
     notebook.add(tabTemperature, text='Temperature')
+    notebook.add(tabCurrency, text='Currency')
     notebook.pack(expand=1, fill="both")
 
     canvas = tools.create_canvas(tabClassic, (), background='black')
     canvas2 = tools.create_canvas(tabTemperature, (), background='black')
+    canvas3 = tools.create_canvas(tabCurrency, (), background='black')
     fill_canvas(tools, canvas, classic, classic.units.values())
     fill_canvas(tools, canvas2, temperature, temperature.temp.values())
+    fill_canvas(tools, canvas3, currency, currency.currency.values())
 
     tools.loop()
 
