@@ -75,7 +75,7 @@ class TemperatureConverter:
             return text
         tools = self.__make(arg)
         conversion = tools[2]
-        text = f"{conversion(tools[0])} {tools[1]}"
+        text = f"{round(conversion(tools[0]), 4)} {tools[1]}"
         return text
         
 def main():

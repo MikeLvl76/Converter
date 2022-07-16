@@ -90,42 +90,30 @@ class Tools:
             'to': values[2]
         }
 
-    def saveResult(self, converter, values):
+    def save_result(self, converter, values):
         self.result = converter.convert(values)
         print(f'{self.result}')
 
-def main():
-    converter = ClassicConverter()
-    tools = Tools()
-    tools.create_window('Converter')
-    tools.root.resizable(0, 0)
-    
-    notebook = tools.add_notebook(tools.root)
-    tabClassic = tools.add_frame(notebook)
-    tabTemperature = tools.add_frame(notebook)
-
-    notebook.add(tabClassic, text='Classic')
-    notebook.add(tabTemperature, text='Temperature')
-
-    notebook.pack(expand=1, fill="both")
-    canvas = tools.create_canvas(tabClassic, (), background='black')
-
+def fill_canvas(tools, canvas, converter, values):
     valueInput = tools.add_stringvar()
     entryInput = tools.add_entry(canvas, valueInput)
     entryInput.insert(0, 'put value here')
     entryInput.event_add('<<end_input>>', '<FocusOut>')
 
-    units = list(converter.units.values())
+    units = list(values)
     unit = []
     for sub in units:
-        for elt in sub:
-            unit.append(elt)
+        if isinstance(sub, (list, tuple)):
+            for elt in sub:
+                unit.append(elt)
+        else:
+            unit.append(sub)
 
     comboboxClassicInput = tools.add_combobox(canvas, unit)
     comboboxClassicOutput = tools.add_combobox(canvas, unit)
     buttonConvert = tools.add_button(canvas, 'Convert',
         lambda : (tools.saveInputs(float(valueInput.get()), comboboxClassicInput.get(), comboboxClassicOutput.get()), 
-        tools.saveResult(converter, tools.save), text.set(f"Result : {tools.result}")), justify='center',
+        tools.save_result(converter, tools.save), text.set(f"Result : {tools.result}")), justify='center',
         background='#00349A', foreground='white')
     
     tools.bind(entryInput, '<<end_input>>', lambda event: tools.validate(event, '^[+-]?(\d*[.])?\d+$', valueInput.get()))
@@ -141,7 +129,6 @@ def main():
     result = tools.add_label(canvas, textvariable=text, background='black', foreground='white', justify='center', font=('Arial', 9), relief="solid", highlightcolor="white", highlightthickness=2)
 
     x_offset = 50
-    y_offset = 35
 
     items = {
         '0': (label1, 5, 10, 50, 30),
@@ -154,6 +141,26 @@ def main():
         '7': (buttonConvert, 5, 130, 90, 30)
     }
     tools.place(items)
+
+def main():
+    classic = ClassicConverter()
+    temperature = TemperatureConverter()
+    tools = Tools()
+    tools.create_window('Converter')
+    tools.root.resizable(0, 0)
+    
+    notebook = tools.add_notebook(tools.root)
+    tabClassic = tools.add_frame(notebook)
+    tabTemperature = tools.add_frame(notebook)
+
+    notebook.add(tabClassic, text='Classic')
+    notebook.add(tabTemperature, text='Temperature')
+    notebook.pack(expand=1, fill="both")
+
+    canvas = tools.create_canvas(tabClassic, (), background='black')
+    canvas2 = tools.create_canvas(tabTemperature, (), background='black')
+    fill_canvas(tools, canvas, classic, classic.units.values())
+    fill_canvas(tools, canvas2, temperature, temperature.temp.values())
 
     tools.loop()
 
