@@ -1,39 +1,39 @@
-class TemperatureConverter:
+class CurrencyConverter:
 
     '''
-    Dict for temperature, each key contains a string representation of temperature unit
-    Currently, there are three units : fahrenheit, celsius, kelvin
+    Dict for currency, each key contains a string representation of currency unit
+    Currently, there are three units : euro, dollar, pound
     '''
 
-    temp = {
-        'fahrenheit': '°F',
-        'celsius': '°C',
-        'kelvin': 'K'
+    currency = {
+        'euro': '€',
+        'dollar': '$',
+        'pound': '£'
     }
 
     '''
-    Dict for conversion between two temperatures.
+    Dict for conversion between two currencies.
     Lambda function is better for easy and fast use.
     '''
 
     conversion = {
-        'celsius-fahrenheit': lambda x: (x * (9/5)) + 32,
-        'fahrenheit-celsius': lambda x: (x - 32) * (5/9),
-        'celsius-kelvin': lambda x: x + 273.15,
-        'kelvin-celsius': lambda x: x - 273.15,
-        'fahrenheit-kelvin': lambda x: (x + 459.67) * (5/9),
-        'kelvin-fahrenheit': lambda x: x * 9/5 - 459.67
+        'dollar-euro': lambda x: x * 0.992000,
+        'euro-dollar': lambda x: x * 1.008065,
+        'dollar-pound': lambda x: x * 0.843526,
+        'pound-dollar': lambda x: x * 1.185500,
+        'euro-pound': lambda x: x * 0.850329,
+        'pound-euro': lambda x: x * 1.176016
     }
 
     '''
-    By one measure we get associated temperature.
+    By one measure we get associated currency.
     If not, None is returned.
     '''
 
-    def get_temp(self, measure=str):
-        keys = self.temp.keys()
+    def get_currency(self, measure=str):
+        keys = self.currency.keys()
         for key in keys:
-            if measure in self.temp[key]:
+            if measure in self.currency[key]:
                 return key
         return None
 
@@ -55,8 +55,8 @@ class TemperatureConverter:
     '''
 
     def __make(self, arg={}):
-        unit_key = self.get_temp(arg['unit'])
-        to_key = self.get_temp(arg['to'])
+        unit_key = self.get_currency(arg['unit'])
+        to_key = self.get_currency(arg['to'])
         if unit_key is None or to_key is None:
             raise TypeError('incorrect temperature unit')
         conversion = self.get_conversion('-'.join([unit_key, to_key]))
@@ -79,8 +79,8 @@ class TemperatureConverter:
         return text
         
 def main():
-    converter = TemperatureConverter()
-    print(converter.convert({'value': 27, 'unit': 'K', 'to': '°F'}))
+    converter = CurrencyConverter()
+    print(converter.convert({'value': 27, 'unit': '£', 'to': '€'}))
 
 if __name__ == '__main__':
     main()
