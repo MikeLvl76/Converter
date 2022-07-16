@@ -43,8 +43,8 @@ class Tools:
         entry.pack()
         return entry
 
-    def add_button(self, master, text, command, **args):
-        button = Button(master, text=text, command=command, **args)
+    def add_button(self, master, **args):
+        button = Button(master, **args)
         button.pack()
         return button
 
@@ -78,7 +78,7 @@ class Tools:
     def loop(self):
         self.root.mainloop()
 
-    def validate(self, event, regex, text):
+    def validate(self, regex, text):
         if not re.match(regex, text):
             messagebox.showerror('Error', f'Text "{text}" does not match expected input')
         else:
@@ -94,6 +94,12 @@ class Tools:
     def save_result(self, converter, values):
         self.result = converter.convert(values)
         print(f'{self.result}')
+
+def switch_selected_values(c1, c2):
+    if c1.get() != '' and c2.get() != '':
+        temp = c1.get()
+        c1.set(c2.get())
+        c2.set(temp)
 
 def fill_canvas(tools, canvas, converter, values):
     valueInput = tools.add_stringvar()
@@ -114,12 +120,13 @@ def fill_canvas(tools, canvas, converter, values):
     comboboxClassicOutput = tools.add_combobox(canvas, unit)
     tools.change_state(comboboxClassicInput, 'readonly')
     tools.change_state(comboboxClassicOutput, 'readonly')
-    buttonConvert = tools.add_button(canvas, 'Convert',
-        lambda : (tools.saveInputs(float(valueInput.get()), comboboxClassicInput.get(), comboboxClassicOutput.get()), 
+    buttonConvert = tools.add_button(canvas, text='Convert',
+        command=lambda : (tools.saveInputs(float(valueInput.get()), comboboxClassicInput.get(), comboboxClassicOutput.get()), 
         tools.save_result(converter, tools.save), text.set(f"Result : {tools.result}")), justify='center',
         background='#00349A', foreground='white')
+    buttonSwitch = tools.add_button(canvas, text='Switch', command=lambda: switch_selected_values(comboboxClassicInput, comboboxClassicOutput), background='#009000', foreground='white')
     
-    tools.bind(entryInput, '<<end_input>>', lambda event: tools.validate(event, '^[+-]?(\d*[.])?\d+$', valueInput.get()))
+    tools.bind(entryInput, '<<end_input>>', lambda event: tools.validate('^[+-]?(\d*[.])?\d+$', valueInput.get()))
     tools.bind(entryInput, '<FocusIn>', lambda event: entryInput.delete(0, END))
     tools.bind(comboboxClassicInput, "<<ComboboxSelected>>", lambda event: print(f"\"{comboboxClassicInput.get()}\" selected !"))
     tools.bind(comboboxClassicOutput, "<<ComboboxSelected>>", lambda event: print(f"\"{comboboxClassicOutput.get()}\" selected !"))
@@ -141,7 +148,8 @@ def fill_canvas(tools, canvas, converter, values):
         '4': (label3, 5, 90, 50, 30),
         '5': (comboboxClassicOutput, tools.dimensions[0] - x_offset * 2, 90, 55, 30),
         '6': (result, tools.dimensions[0] - x_offset * 4.5, 130, 200, 30),
-        '7': (buttonConvert, 5, 130, 90, 30)
+        '7': (buttonConvert, 5, 130, 90, 30),
+        '8': (buttonSwitch, 100, 130, 55, 30)
     }
     tools.place(items)
 
