@@ -1,5 +1,5 @@
 import re
-from tkinter import ttk
+from tkinter import EW, NS, Text, ttk
 from tkinter.ttk import Combobox
 from converters.classic_converter import ClassicConverter
 from converters.temperature_converter import TemperatureConverter
@@ -116,8 +116,22 @@ def fetch_and_display(tools, canvas, manager):
     db_tools = manager.connect(manager.get_db_name(DECODER))
     table = manager.get_table_name(DECODER, 0)
     rows = manager.make_query(db_tools[1], f"SELECT * FROM {table}", None)
+    i = 0
+
+    text = Text(canvas, height=10)
+    text.grid(row=0, column=0, sticky=EW)
+    scrollbar = ttk.Scrollbar(canvas, orient='vertical', command=text.yview)
+    scrollbar.grid(row=0, column=1, sticky=NS)
+    text['yscrollcommand'] = scrollbar.set
+
     for row in rows:
-        print(row)
+        tup = (str(i),) + row
+        label = Label(canvas, text=' '.join(tup), font=('Arial', 9))
+        position = f'{i}.0'
+        text.insert(position, f'{label.cget("text")}\n')
+        text.configure(background="black", foreground="white")
+        i += 1
+    
 
 def displayStorage(tools, canvas):
     manager = DBManager()
