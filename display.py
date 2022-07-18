@@ -14,7 +14,7 @@ def switch_selected_values(c1, c2):
 
 def store(manager, columns=(), values=()):
     if '' in values or None in values:
-        messagebox.showerror('Error', 'Fill required values')
+        messagebox.showerror('Error', 'Some values are empty')
     db_tools = manager.connect(manager.get_db_name(DECODER))
     table = manager.get_table_name(DECODER, 0)
     manager.create_table(db_tools[1], table, columns)
@@ -33,14 +33,17 @@ def fetch_and_display(tools, canvas, manager):
     scrollbar = ttk.Scrollbar(canvas, orient='vertical', command=text.yview)
     scrollbar.grid(row=0, column=1, sticky=NS)
     text['yscrollcommand'] = scrollbar.set
+    text.configure(background="black", foreground="white")
 
     for row in rows:
-        tup = (str(i),) + row
-        label = Label(canvas, text=' '.join(tup), font=('Arial', 9))
-        position = f'{i}.0'
+        tup = row
+        label = Label(canvas, text='\t'.join(tup), font=('Arial', 9))
+        position = f'{i + 1}.0'
         text.insert(position, f'{label.cget("text")}\n')
-        text.configure(background="black", foreground="white")
         i += 1
+
+    position = '0.0'
+    text.insert(position, '\t'.join(['value', 'unit', 'result', 'new_unit']) + '\n')
     
 
 def displayStorage(tools, canvas):

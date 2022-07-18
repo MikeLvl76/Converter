@@ -1,5 +1,2 @@
-# json for database
-sources/db.json
-
 # database files
 *.db

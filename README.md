@@ -61,8 +61,9 @@ Here is a list of formulas for conversion :
 
 # Results
 
-Here is a collection of few screenshots :
+Here is a collection of few screenshots (each screenshot was taken at different time) :
 
 ![Currency conversion](/results/converter1.png)
 ![Classic conversion](/results/converter2.png)
 ![Temperature conversion](/results/converter3.png)
+![Storage](/results/storage.png)
