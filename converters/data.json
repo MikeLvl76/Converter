@@ -1,0 +1,37 @@
+{
+    "SI" : {
+        "meter": ["mm", "cm", "dm", "m", "dam", "hm", "km"],
+        "liter": ["ml", "cl", "dl", "l", "dal", "hl", "kl"],
+        "gram": ["mg", "cg", "dg", "g", "dag", "hg", "kg"]
+    },
+    "currency" : {
+        "euro": ["€"],
+        "dollar": ["$"],
+        "pound": ["£"]
+    },
+    "temperature" : {
+        "fahrenheit": ["F"],
+        "celsius": ["C"],
+        "kelvin":  ["K"]
+    },
+    "conversion" : {
+        "gram-liter": "lambda x: x / 1000",
+        "liter-gram": "lambda x: x * 1000",
+        "gram-meter": "lambda x: x / 1000",
+        "meter-gram": "lambda x: x * 1000",
+        "liter-meter": "lambda x: x / 1000",
+        "meter-liter": "lambda x: x * 1000",
+        "dollar-euro": "lambda x: x * 0.992000",
+        "euro-dollar": "lambda x: x * 1.008065",
+        "dollar-pound": "lambda x: x * 0.843526",
+        "pound-dollar": "lambda x: x * 1.185500",
+        "euro-pound": "lambda x: x * 0.850329",
+        "pound-euro": "lambda x: x * 1.176016",
+        "celsius-fahrenheit": "lambda x: (x * (9/5)) + 32",
+        "fahrenheit-celsius": "lambda x: (x - 32) * (5/9)",
+        "celsius-kelvin": "lambda x: x + 273.15",
+        "kelvin-celsius": "lambda x: x - 273.15",
+        "fahrenheit-kelvin": "lambda x: (x + 459.67) * (5/9)",
+        "kelvin-fahrenheit": "lambda x: x * 9/5 - 459.67"
+    }
+}
