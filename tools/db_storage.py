@@ -1,6 +1,10 @@
 import sqlite3
 import json
 
+'''
+Class for managing database with sqlite3.
+A JSON file is used as storage for database name and tables name.
+'''
 class DBManager:
 
     def __init__(self) -> None:

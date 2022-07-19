@@ -1,12 +1,20 @@
 import json
 
+'''
+Class to convert unit to another.
+Currently there are 3 types of units : ISU, currency and temperature.
+A JSON file is used as supply and contains what it's needed.
+'''
 class Converter:
 
     '''
-    Save messages for GUI application
+    Save current result from conversion
     '''
-    MESSAGES = []
+    CURRENT = 0
 
+    '''
+    Save user inputs
+    '''
     INPUTS = []
 
     '''
@@ -94,38 +102,39 @@ class Converter:
         index2 = self.get_value(key2).index(arg['to'])
         conversion = self.get_func_from('-'.join([key1, key2]))
 
-        self.MESSAGES.append(f"Converting {key1} into {key2}...")
-        self.MESSAGES.append(f"Entered value is ({arg['value']}{arg['unit']})")
+        print(f"Converting {key1} into {key2}...")
+        print(f"Entered value is ({arg['value']}{arg['unit']})")
 
-        result = 'None'
-        message = ''
+        text = 'None'
+        result = 0
         if(conversion is not None):
             if index1 < index2:
                 calculation = conversion(arg['value'] / 10 ** (index2  - index1))
-                mesage = round(calculation, 3)
-                result = f"{message}{arg['to']}"
+                result = round(calculation, 3)
+                text = f"{result}{arg['to']}"
             elif index1 > index2:
                 calculation = conversion(arg['value'] * 10 ** (index1  - index2))
-                message = round(calculation, 3)
-                result = f"{message}{arg['to']}"
+                result = round(calculation, 3)
+                text = f"{result}{arg['to']}"
             else:
-                message = round(conversion(arg['value']), 3)
-                result = f"{message}{arg['to']}"
+                result = round(conversion(arg['value']), 3)
+                text = f"{result}{arg['to']}"
         else:
             if index1 < index2:
                 calculation = arg['value'] / 10 ** (index2  - index1 )
-                message = round(calculation, 3)
-                result = f"{message}{arg['to']}"
+                result = round(calculation, 3)
+                text = f"{result}{arg['to']}"
             elif index1 > index2:
                 calculation = arg['value'] * 10 ** (index1  - index2 )
-                message = round(calculation, 3)
-                result = f"{message}{arg['to']}"
+                result = round(calculation, 3)
+                text = f"{result}{arg['to']}"
             else:
-                message = round(conversion(arg['value']), 3)
-                result = f"{message}{arg['to']}"
+                result = round(conversion(arg['value']), 3)
+                text = f"{result}{arg['to']}"
 
-        self.MESSAGES.append(message)
-        return result
+        self.CURRENT = result
+        print(f'Result is ({result}{arg["to"]})')
+        return text
         
 
 def main():
@@ -133,7 +142,7 @@ def main():
     converter.fetch_data()
     print(converter.do_conversion({'value': 27, 'unit': 'K', 'to': '°F'}))
     print(converter.do_conversion({'value': 27, 'unit': '£', 'to': '€'}))
-    print(converter.do_conversion({'value': 1, 'unit': 'l', 'to': 'm'}))
+    print(converter.do_conversion({'value': 1, 'unit': 'mm', 'to': 'cg'}))
     
 
 if __name__ == '__main__':

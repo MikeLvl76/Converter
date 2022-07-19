@@ -87,7 +87,7 @@ def fill_canvas(tools, canvas, converter, values, manager, storage):
     buttonStore = tools.add_button(canvas, text='Store', 
         command=lambda: store(storage, manager, 'databases/conversion.db', 'conversion',
         ('value', 'unit', 'result', 'target_unit'), 
-        (valueInput.get(), "'" + comboboxClassicInput.get() + "'", converter.MESSAGES[2], "'" + comboboxClassicOutput.get() + "'")), 
+        (valueInput.get(), "'" + comboboxClassicInput.get() + "'", converter.CURRENT, "'" + comboboxClassicOutput.get() + "'")), 
         background='purple', foreground='white')
     
     tools.bind(entryInput, '<<end_input>>', lambda event: validate('[+-]?(\d*[.])?\d+', valueInput.get()))
