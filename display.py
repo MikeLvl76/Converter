@@ -11,7 +11,7 @@ def switch_selected_values(c1, c2):
         c1.set(c2.get())
         c2.set(temp)
 
-def store(manager, db_name, table_name, columns=(), values=()):
+def store(canvas, manager, db_name, table_name, columns=(), values=()):
     if '' in values or None in values:
         messagebox.showerror('Error', 'Some values are empty')
         return
@@ -19,13 +19,8 @@ def store(manager, db_name, table_name, columns=(), values=()):
     manager.create_table(table_name, columns)
     placeholder = ','.join(['?' for _ in range(len(values))])
     manager.make_query("INSERT INTO " + table_name + " VALUES (" + placeholder + ")", values)
-    manager.commit_and_close()
 
-def fetch_and_display(canvas, manager, db, table, columns=None or ()):
-    manager.connect_to(db)
-    if table not in manager.get_values('tables'):
-        manager.create_table(table, columns)
-    rows = manager.make_query(f"SELECT * FROM {table}")
+    rows = manager.make_query(f"SELECT * FROM {table_name}")
     i = 0
 
     text = Text(canvas, height=10)
@@ -44,11 +39,8 @@ def fetch_and_display(canvas, manager, db, table, columns=None or ()):
 
     position = '0.0'
     text.insert(position, '\t'.join(['value', 'unit', 'result', 'new_unit']) + '\n')
-    
 
-def displayStorage(tools, canvas, manager, db, table, columns=None or ()):
-    tools.bind(canvas, '<FocusIn>',
-    lambda event: fetch_and_display(canvas, manager, db, table, columns))
+    manager.commit_and_close()
 
 def make_conversion(converter, values):
     converter.save_inputs(values)
@@ -65,7 +57,7 @@ def validate(regex, text):
         else:
             print(f"Written text : {text}")
 
-def fill_canvas(tools, canvas, converter, values, manager):
+def fill_canvas(tools, canvas, converter, values, manager, storage):
 
     valueInput = tools.add_stringvar()
     entryInput = tools.add_entry(canvas, valueInput)
@@ -93,7 +85,7 @@ def fill_canvas(tools, canvas, converter, values, manager):
     buttonSwitch = tools.add_button(canvas, text='Switch', command=lambda: switch_selected_values(comboboxClassicInput, comboboxClassicOutput), background='#009000', foreground='white')
 
     buttonStore = tools.add_button(canvas, text='Store', 
-        command=lambda: store(manager, 'databases/conversion.db', 'conversion',
+        command=lambda: store(storage, manager, 'databases/conversion.db', 'conversion',
         ('value', 'unit', 'result', 'target_unit'), 
         (valueInput.get(), "'" + comboboxClassicInput.get() + "'", converter.MESSAGES[2], "'" + comboboxClassicOutput.get() + "'")), 
         background='purple', foreground='white')
@@ -142,7 +134,7 @@ def main():
     tabCurrency = tools.add_frame(notebook)
     tabStorage = tools.add_frame(notebook)
 
-    notebook.add(tabClassic, text='SI')
+    notebook.add(tabClassic, text='ISU')
     notebook.add(tabTemperature, text='Temperature')
     notebook.add(tabCurrency, text='Currency')
     notebook.add(tabStorage, text='Storage')
@@ -153,10 +145,9 @@ def main():
     canvas3 = tools.create_canvas(tabCurrency, (), background='black')
     canvasStorage = tools.create_canvas(tabStorage, (), background='black')
     
-    fill_canvas(tools, canvas, converter, converter.get_values_of('ISU'), manager)
-    fill_canvas(tools, canvas2, converter, converter.get_values_of('temperature'), manager)
-    fill_canvas(tools, canvas3, converter, converter.get_values_of('currency'), manager)
-    displayStorage(tools, canvasStorage, manager, 'databases/conversion.db', 'conversion', ('value', 'unit', 'result', 'target_unit'))
+    fill_canvas(tools, canvas, converter, converter.get_values_of('ISU'), manager, canvasStorage)
+    fill_canvas(tools, canvas2, converter, converter.get_values_of('temperature'), manager, canvasStorage)
+    fill_canvas(tools, canvas3, converter, converter.get_values_of('currency'), manager, canvasStorage)
 
     tools.loop()
 

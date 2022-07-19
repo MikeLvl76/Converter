@@ -34,6 +34,10 @@ class DBManager:
         if name not in self.decoder['tables']:
             self.decoder['tables'].append(name)
 
+    def table_exists(self, table):
+        self.make_query(f"SELECT EXISTS (SELECT name FROM sqlite_schema WHERE type='table' AND name='{table}');")
+        return self.cursor.fetchone()[0]
+
     def make_query(self, query, params=None or ()):
         if params is not None:
             return self.cursor.execute(query, params)
@@ -52,6 +56,7 @@ def main():
     manager = DBManager()
     manager.fetch_data('sources/db.json')
     manager.connect_to('databases/test.db')
+    print(manager.table_exists('zeysgvue'))
     manager.create_table('example', 'id', 'value', 'unit', 'result', 'new_unit')
     table = manager.get_item('tables', 0)
     manager.make_query(f"INSERT INTO {table} VALUES ({1}, {65}, 'K', {65 - 273.15}, '°C')")
