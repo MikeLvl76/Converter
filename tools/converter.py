@@ -7,6 +7,8 @@ class Converter:
     '''
     MESSAGES = []
 
+    INPUTS = []
+
     '''
     Initialize by creating variable for json reading
     '''
@@ -65,6 +67,10 @@ class Converter:
                 return eval(self.__decoder['conversion'][k])
         return None
 
+    def save_inputs(self, inputs):
+        for ipt in inputs:
+            self.INPUTS.append(ipt)
+
     '''
     Do a conversion by giving dict
     The dict must have 3 keys : value, unit and to
@@ -92,26 +98,33 @@ class Converter:
         self.MESSAGES.append(f"Entered value is ({arg['value']}{arg['unit']})")
 
         result = 'None'
+        message = ''
         if(conversion is not None):
             if index1 < index2:
                 calculation = conversion(arg['value'] / 10 ** (index2  - index1))
-                result = f"{round(calculation, 4)}{arg['to']}"
+                mesage = round(calculation, 3)
+                result = f"{message}{arg['to']}"
             elif index1 > index2:
                 calculation = conversion(arg['value'] * 10 ** (index1  - index2))
-                result = f"{round(calculation, 4)}{arg['to']}"
+                message = round(calculation, 3)
+                result = f"{message}{arg['to']}"
             else:
-                result = f"{conversion(arg['value'])}{arg['to']}"
+                message = round(conversion(arg['value']), 3)
+                result = f"{message}{arg['to']}"
         else:
             if index1 < index2:
                 calculation = arg['value'] / 10 ** (index2  - index1 )
-                result = f"{round(calculation, 4)}{arg['to']}"
+                message = round(calculation, 3)
+                result = f"{message}{arg['to']}"
             elif index1 > index2:
                 calculation = arg['value'] * 10 ** (index1  - index2 )
-                result = f"{round(calculation, 4)}{arg['to']}"
+                message = round(calculation, 3)
+                result = f"{message}{arg['to']}"
             else:
-                result = f"{arg['value']}{arg['to']}"
+                message = round(conversion(arg['value']), 3)
+                result = f"{message}{arg['to']}"
 
-        self.MESSAGES.append(result)
+        self.MESSAGES.append(message)
         return result
         
 

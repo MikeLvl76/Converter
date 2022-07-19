@@ -1,4 +1,10 @@
 {
-    "db_name": "converter.db",
-    "tables": ["classic", "temperature", "currency"]
+    "databases": [
+        "databases/test.db",
+        "databases/conversion.db"
+    ],
+    "tables": [
+        "example",
+        "conversion"
+    ]
 }

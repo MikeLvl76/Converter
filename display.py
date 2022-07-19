@@ -1,7 +1,8 @@
+import re
 from tkinter import EW, NS, Text, ttk
 from tkinter import END, Label, messagebox
 from tools.tool import Tools
-from tools.db_storage import DECODER, DBManager
+from tools.db_storage import DBManager
 from tools.converter import Converter
 
 def switch_selected_values(c1, c2):
@@ -10,20 +11,21 @@ def switch_selected_values(c1, c2):
         c1.set(c2.get())
         c2.set(temp)
 
-def store(manager, columns=(), values=()):
+def store(manager, db_name, table_name, columns=(), values=()):
     if '' in values or None in values:
         messagebox.showerror('Error', 'Some values are empty')
-    db_tools = manager.connect(manager.get_db_name(DECODER))
-    table = manager.get_table_name(DECODER, 0)
-    manager.create_table(db_tools[1], table, columns)
+        return
+    manager.connect_to(db_name)
+    manager.create_table(table_name, columns)
     placeholder = ','.join(['?' for _ in range(len(values))])
-    manager.make_query(db_tools[1], "INSERT INTO " + table + " VALUES (" + placeholder + ")", values)
-    manager.commit_and_close(db_tools[0])
+    manager.make_query("INSERT INTO " + table_name + " VALUES (" + placeholder + ")", values)
+    manager.commit_and_close()
 
-def fetch_and_display(canvas, manager):
-    db_tools = manager.connect(manager.get_db_name(DECODER))
-    table = manager.get_table_name(DECODER, 0)
-    rows = manager.make_query(db_tools[1], f"SELECT * FROM {table}", None)
+def fetch_and_display(canvas, manager, db, table, columns=None or ()):
+    manager.connect_to(db)
+    if table not in manager.get_values('tables'):
+        manager.create_table(table, columns)
+    rows = manager.make_query(f"SELECT * FROM {table}")
     i = 0
 
     text = Text(canvas, height=10)
@@ -34,7 +36,7 @@ def fetch_and_display(canvas, manager):
     text.configure(background="black", foreground="white")
 
     for row in rows:
-        tup = row
+        tup = map(str, row)
         label = Label(canvas, text='\t'.join(tup), font=('Arial', 9))
         position = f'{i + 1}.0'
         text.insert(position, f'{label.cget("text")}\n')
@@ -44,13 +46,27 @@ def fetch_and_display(canvas, manager):
     text.insert(position, '\t'.join(['value', 'unit', 'result', 'new_unit']) + '\n')
     
 
-def displayStorage(tools, canvas):
-    manager = DBManager()
+def displayStorage(tools, canvas, manager, db, table, columns=None or ()):
     tools.bind(canvas, '<FocusIn>',
-    lambda event: fetch_and_display(canvas, manager))
+    lambda event: fetch_and_display(canvas, manager, db, table, columns))
 
-def fill_canvas(tools, canvas, converter, values):
-    manager = DBManager()
+def make_conversion(converter, values):
+    converter.save_inputs(values)
+    items = {
+        'value': values[0],
+        'unit': values[1],
+        'to': values[2]
+    }
+    return converter.do_conversion(items)
+
+def validate(regex, text):
+        if not re.match(regex, text):
+            messagebox.showerror('Error', f'Text "{text}" does not match expected input')
+        else:
+            print(f"Written text : {text}")
+
+def fill_canvas(tools, canvas, converter, values, manager):
+
     valueInput = tools.add_stringvar()
     entryInput = tools.add_entry(canvas, valueInput)
     entryInput.insert(0, 'put value here')
@@ -69,17 +85,20 @@ def fill_canvas(tools, canvas, converter, values):
     comboboxClassicOutput = tools.add_combobox(canvas, unit)
     tools.change_state(comboboxClassicInput, 'readonly')
     tools.change_state(comboboxClassicOutput, 'readonly')
+
     buttonConvert = tools.add_button(canvas, text='Convert',
-        command=lambda : (tools.saveInputs(float(valueInput.get()), comboboxClassicInput.get(), comboboxClassicOutput.get()), 
-        tools.save_result(converter, tools.save), text.set(f"Result : {tools.result}")), justify='center',
+        command=lambda : text.set(f"Result is {make_conversion(converter, [float(valueInput.get()), comboboxClassicInput.get(), comboboxClassicOutput.get()])}"), justify='center',
         background='#00349A', foreground='white')
+
     buttonSwitch = tools.add_button(canvas, text='Switch', command=lambda: switch_selected_values(comboboxClassicInput, comboboxClassicOutput), background='#009000', foreground='white')
+
     buttonStore = tools.add_button(canvas, text='Store', 
-        command=lambda: store(manager, ('value', 'unit', 'result', 'new_unit'), 
-    (valueInput.get(), "'" + comboboxClassicInput.get() + "'", ''.join(c for c in tools.result if c.isdigit() or c == '-' or c == '.'), "'" + comboboxClassicOutput.get() + "'")), 
+        command=lambda: store(manager, 'databases/conversion.db', 'conversion',
+        ('value', 'unit', 'result', 'target_unit'), 
+        (valueInput.get(), "'" + comboboxClassicInput.get() + "'", converter.MESSAGES[2], "'" + comboboxClassicOutput.get() + "'")), 
         background='purple', foreground='white')
     
-    tools.bind(entryInput, '<<end_input>>', lambda event: tools.validate('[+-]?(\d*[.])?\d+', valueInput.get()))
+    tools.bind(entryInput, '<<end_input>>', lambda event: validate('[+-]?(\d*[.])?\d+', valueInput.get()))
     tools.bind(entryInput, '<FocusIn>', lambda event: entryInput.delete(0, END))
     tools.bind(comboboxClassicInput, "<<ComboboxSelected>>", lambda event: print(f"\"{comboboxClassicInput.get()}\" selected !"))
     tools.bind(comboboxClassicOutput, "<<ComboboxSelected>>", lambda event: print(f"\"{comboboxClassicOutput.get()}\" selected !"))
@@ -87,6 +106,7 @@ def fill_canvas(tools, canvas, converter, values):
     label1 = tools.add_label(canvas, text='value'.upper(), background='black', foreground='white', justify='left', font=('Arial', 9))
     label2 = tools.add_label(canvas, text='unit'.upper(), background='black', foreground='white', justify='left', font=('Arial', 9))
     label3 = tools.add_label(canvas, text='to'.upper(), background='black', foreground='white', justify='left', font=('Arial', 9))
+
     text = tools.add_stringvar()
     text.set('Awaiting result')
     result = tools.add_label(canvas, textvariable=text, background='black', foreground='white', justify='center', font=('Arial', 9), relief="solid", highlightcolor="white", highlightthickness=2)
@@ -110,6 +130,8 @@ def fill_canvas(tools, canvas, converter, values):
 def main():
     converter = Converter()
     converter.fetch_data()
+    manager = DBManager()
+    manager.fetch_data('sources/db.json')
     tools = Tools()
     tools.create_window('Converter')
     tools.root.resizable(0, 0)
@@ -131,10 +153,10 @@ def main():
     canvas3 = tools.create_canvas(tabCurrency, (), background='black')
     canvasStorage = tools.create_canvas(tabStorage, (), background='black')
     
-    fill_canvas(tools, canvas, converter, converter.get_values_of('SI'))
-    fill_canvas(tools, canvas2, converter, converter.get_values_of('temperature'))
-    fill_canvas(tools, canvas3, converter, converter.get_values_of('currency'))
-    displayStorage(tools, canvasStorage)
+    fill_canvas(tools, canvas, converter, converter.get_values_of('ISU'), manager)
+    fill_canvas(tools, canvas2, converter, converter.get_values_of('temperature'), manager)
+    fill_canvas(tools, canvas3, converter, converter.get_values_of('currency'), manager)
+    displayStorage(tools, canvasStorage, manager, 'databases/conversion.db', 'conversion', ('value', 'unit', 'result', 'target_unit'))
 
     tools.loop()
 

@@ -1,4 +1,3 @@
-import re
 from tkinter import Button, Canvas, Label, Tk, StringVar, Entry, messagebox
 from tkinter import ttk
 
@@ -73,20 +72,3 @@ class Tools:
 
     def loop(self):
         self.root.mainloop()
-
-    def validate(self, regex, text):
-        if not re.match(regex, text):
-            messagebox.showerror('Error', f'Text "{text}" does not match expected input')
-        else:
-            print(f"Written text : {text}")
-
-    def saveInputs(self, *values):
-        self.save = {
-            'value': values[0],
-            'unit': values[1],
-            'to': values[2]
-        }
-
-    def save_result(self, converter, values):
-        self.result = converter.do_conversion(values)
-        print(f'{self.result}')

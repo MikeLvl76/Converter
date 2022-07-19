@@ -1,6 +1,6 @@
 # cache
 __pycache__
-storage/__pycache__
+tools/__pycache__
 
-# database files
-*.db
+# database files in directory
+databases
