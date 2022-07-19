@@ -10,8 +10,8 @@
         "pound": ["£"]
     },
     "temperature" : {
-        "fahrenheit": ["F"],
-        "celsius": ["C"],
+        "fahrenheit": ["°F"],
+        "celsius": ["°C"],
         "kelvin":  ["K"]
     },
     "conversion" : {
