@@ -88,5 +88,5 @@ class Tools:
         }
 
     def save_result(self, converter, values):
-        self.result = converter.convert(values)
+        self.result = converter.do_conversion(values)
         print(f'{self.result}')

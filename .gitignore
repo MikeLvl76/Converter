@@ -1,6 +1,5 @@
 # cache
 __pycache__
-converters/__pycache__
 storage/__pycache__
 
 # database files

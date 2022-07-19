@@ -46,6 +46,14 @@ class Converter:
         return None
 
     '''
+    Get all child keys values from parent key and returned them as dict_series
+    If not found, then empty array is returned'''
+    def get_values_of(self, key):
+        if key not in self.__decoder.keys():
+            return []
+        return self.__decoder[key].values()
+
+    '''
     Get function in conversion key by giving a child key
     If found then it's evaluated in order to being usable
     If not found, then None is returned

@@ -1,10 +1,8 @@
 from tkinter import EW, NS, Text, ttk
-from converters.classic_converter import ClassicConverter
-from converters.temperature_converter import TemperatureConverter
-from converters.currency_converter import CurrencyConverter
 from tkinter import END, Label, messagebox
-from tool import Tools
-from storage.db_storage import DECODER, DBManager
+from tools.tool import Tools
+from tools.db_storage import DECODER, DBManager
+from tools.converter import Converter
 
 def switch_selected_values(c1, c2):
     if c1.get() != '' and c2.get() != '':
@@ -22,7 +20,7 @@ def store(manager, columns=(), values=()):
     manager.make_query(db_tools[1], "INSERT INTO " + table + " VALUES (" + placeholder + ")", values)
     manager.commit_and_close(db_tools[0])
 
-def fetch_and_display(tools, canvas, manager):
+def fetch_and_display(canvas, manager):
     db_tools = manager.connect(manager.get_db_name(DECODER))
     table = manager.get_table_name(DECODER, 0)
     rows = manager.make_query(db_tools[1], f"SELECT * FROM {table}", None)
@@ -49,7 +47,7 @@ def fetch_and_display(tools, canvas, manager):
 def displayStorage(tools, canvas):
     manager = DBManager()
     tools.bind(canvas, '<FocusIn>',
-    lambda event: fetch_and_display(tools, canvas, manager))
+    lambda event: fetch_and_display(canvas, manager))
 
 def fill_canvas(tools, canvas, converter, values):
     manager = DBManager()
@@ -110,9 +108,8 @@ def fill_canvas(tools, canvas, converter, values):
     tools.place(items)
 
 def main():
-    classic = ClassicConverter()
-    temperature = TemperatureConverter()
-    currency = CurrencyConverter()
+    converter = Converter()
+    converter.fetch_data()
     tools = Tools()
     tools.create_window('Converter')
     tools.root.resizable(0, 0)
@@ -123,7 +120,7 @@ def main():
     tabCurrency = tools.add_frame(notebook)
     tabStorage = tools.add_frame(notebook)
 
-    notebook.add(tabClassic, text='Classic')
+    notebook.add(tabClassic, text='SI')
     notebook.add(tabTemperature, text='Temperature')
     notebook.add(tabCurrency, text='Currency')
     notebook.add(tabStorage, text='Storage')
@@ -133,9 +130,10 @@ def main():
     canvas2 = tools.create_canvas(tabTemperature, (), background='black')
     canvas3 = tools.create_canvas(tabCurrency, (), background='black')
     canvasStorage = tools.create_canvas(tabStorage, (), background='black')
-    fill_canvas(tools, canvas, classic, classic.units.values())
-    fill_canvas(tools, canvas2, temperature, temperature.temp.values())
-    fill_canvas(tools, canvas3, currency, currency.currency.values())
+    
+    fill_canvas(tools, canvas, converter, converter.get_values_of('SI'))
+    fill_canvas(tools, canvas2, converter, converter.get_values_of('temperature'))
+    fill_canvas(tools, canvas3, converter, converter.get_values_of('currency'))
     displayStorage(tools, canvasStorage)
 
     tools.loop()
