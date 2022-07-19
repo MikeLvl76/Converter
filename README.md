@@ -7,7 +7,7 @@ A program that computes converted values, it uses maths which is needed for conv
 At this time, not many.
 Currently ther are 3 types of conversion :</br>
 
-**Classic conversion**
+**ISU conversion**
 |Unit|meter|liter|gram|
 |--|--|--|--|
 |meter|implemented|implemented but does not consider meter as cubic meter|implemented|
@@ -37,7 +37,7 @@ With $a$ the result and $b$ the value to convert.
 # Where the formulas can be found ?
 
 Here is a list of formulas for conversion :
-- ***For classic conversion*** :
+- ***For ISU conversion*** :
     - gram to liter -> gram value / 1000
     - liter to gram -> liter value * 1000
     - gram to meter -> gram value / 1000
