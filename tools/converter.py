@@ -17,7 +17,7 @@ class Converter:
     Open and read json with utf-8 encoding (needed for special characters)
     '''
     def fetch_data(self):
-        self.__decoder = json.load(open('converters/data.json', encoding='utf-8'))
+        self.__decoder = json.load(open('sources/data.json', encoding='utf-8'))
 
     '''
     Get an item by its value and return it
