@@ -1,4 +1,5 @@
 import json
+from tkinter import CURRENT
 
 '''
 Class to convert unit to another.
@@ -135,6 +136,14 @@ class Converter:
         self.CURRENT = result
         print(f'Result is ({result}{arg["to"]})')
         return text
+
+    def __str__(self) -> str:
+        ipts = f"Inputs: [{', '.join([str(ipt) for ipt in self.INPUTS])}]\n"
+        cur = f"Current result: {self.CURRENT}"
+        if self.__decoder is None:
+            no_data = 'No read data\n'
+            return no_data + ipts + cur
+        return json.dumps(self.__decoder, indent=4) + '\n' + ipts + cur
         
 
 def main():
@@ -143,6 +152,7 @@ def main():
     print(converter.do_conversion({'value': 27, 'unit': 'K', 'to': '°F'}))
     print(converter.do_conversion({'value': 27, 'unit': '£', 'to': '€'}))
     print(converter.do_conversion({'value': 1, 'unit': 'mm', 'to': 'cg'}))
+    print(converter)
     
 
 if __name__ == '__main__':
